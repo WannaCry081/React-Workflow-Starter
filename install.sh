@@ -7,11 +7,11 @@ parent_dir="$(dirname "$current_dir")"
 
 cd "$current_dir"
 
-rm -f README.md index.html install.sh
+rm -f README.md readme.md index.html install.sh
 rm -rf .git assets
 
 for doc in AGENTS.md CLAUDE.md; do
-	if [[ ! -e "$parent_dir/$doc" ]]; then
+	if [[ -e "$parent_dir/$doc" ]]; then
 		rm -f "$doc"
 	fi
 done
