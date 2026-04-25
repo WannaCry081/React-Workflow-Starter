@@ -2,3 +2,4 @@
 # Codex reads `AGENTS.md` for shared instructions and discovers skills from:
 # - `.agents/skills` in this repository
 # - `$HOME/.agents/skills` on this machine
+# Workflow commands are exposed to Codex through `.agents/skills/<name>/SKILL.md`.

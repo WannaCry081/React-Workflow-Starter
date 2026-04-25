@@ -51,20 +51,19 @@ These workflow commands are available as skills in `.agents/skills/`. Load and f
 | Command     | Trigger                                                | Skill path                          |
 | ----------- | ------------------------------------------------------ | ----------------------------------- |
 | `ask`       | Refine a prompt, minimize tokens before planning       | `.agents/skills/ask/SKILL.md`       |
+| `bug`       | Generate a structured bug report for an issue          | `.agents/skills/bug/SKILL.md`       |
 | `plan`      | Convert a request into a plan with acceptance criteria | `.agents/skills/plan/SKILL.md`      |
-| `implement` | Execute a todo file end-to-end                         | `.agents/skills/implement/SKILL.md` |
 | `todo`      | Generate an implementation-ready TODO checklist        | `.agents/skills/todo/SKILL.md`      |
+| `tdd`       | Toggle test-first workflow mode with `on` or `off`     | `.agents/skills/tdd/SKILL.md`       |
+| `implement` | Execute a todo file end-to-end                         | `.agents/skills/implement/SKILL.md` |
+| `test`      | Generate and run tests from a task file                | `.agents/skills/test/SKILL.md`      |
+| `commit`    | Create atomic Conventional Commits from active changes | `.agents/skills/commit/SKILL.md`    |
 
 Each skill delegates to the canonical definition in `.ai/commands/<name>.md`.
 
 ### Cross-Tool Command Wrappers
 
-The `commit` workflow is intentionally exposed as command wrappers (not a skill), all delegating to `.ai/commands/commit.md`:
-
-- `.claude/commands/commit.md`
-- `.codex/commands/commit.md`
-- `.opencode/commands/commit.md`
-- `.github/prompts/commit.prompt.md`
+Commands that need direct slash/prompt support are exposed as thin wrappers for Claude, Codex, OpenCode, and Copilot where that tool supports custom command files. Codex should treat the `.agents/skills/<name>/SKILL.md` files as the reliable workflow invocation source.
 
 ## Repo Convention
 

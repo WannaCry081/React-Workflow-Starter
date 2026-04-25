@@ -3,11 +3,13 @@
 This repository is a workflow starter for agent-driven delivery. The core loop is:
 
 1. Ask (tighten request)
-2. Plan (define implementation)
-3. Todo (create execution checklist)
-4. Implement (ship checklist items)
-5. Test (generate/run tests)
-6. Commit (atomic Conventional Commits)
+2. Bug (document a known or suspected issue)
+3. Plan (define implementation)
+4. Todo (create execution checklist)
+5. TDD (toggle test-first mode)
+6. Implement (ship checklist items)
+7. Test (generate/run tests)
+8. Commit (atomic Conventional Commits)
 
 ## Code Review Graph
 
@@ -39,6 +41,7 @@ Common graph-first use cases:
 ## Source Of Truth
 
 - Shared rules for all agents: `AGENTS.md`
+- Codex workflow invocation: `.agents/skills/<name>/SKILL.md`
 - Copilot-specific behavior: `.github/copilot-instructions.md`
 - Canonical command contracts: `.ai/commands/*.md`
 - Output templates: `.ai/references/*.md`
@@ -70,6 +73,8 @@ Commands read `.ai/config/workflow-mode.md` for `TDD_MODE`.
 
 If `.ai/config/workflow-mode.md` is missing, default behavior is `TDD_MODE: off`.
 
+Use `/tdd on` or `/tdd off` to update `.ai/config/workflow-mode.md`.
+
 ## Command Behavior
 
 ### 1) Ask
@@ -82,7 +87,16 @@ Use for token-efficient request refinement before planning or coding.
 - Ask only blocking questions
 - Avoid unnecessary tool calls
 
-### 2) Plan
+### 2) Bug
+
+File: `.ai/commands/bug.md`
+
+Generates one structured bug report using `.ai/references/bug-template.md`.
+
+- Output path: `docs/tasks/todo/<number>-<bug-title>-bug.md`
+- Must include: symptom, probable root cause, root cause files, reproduction steps, fix checklist, done criteria
+
+### 3) Plan
 
 File: `.ai/commands/plan.md`
 
@@ -91,7 +105,7 @@ Generates one implementation-ready plan file using `.ai/references/plan-template
 - Output path: `docs/tasks/plan/<number>-<plan-name>.md`
 - Must include: scope, ordered steps, testable acceptance criteria
 
-### 3) Todo
+### 4) Todo
 
 File: `.ai/commands/todo.md`
 
@@ -100,7 +114,17 @@ Generates one execution checklist using `.ai/references/todo-template.md`.
 - Output path: `docs/tasks/todo/<number>-<todo-name>.md`
 - Must include: files to modify, dependencies, checklist, validation, done criteria
 
-### 4) Implement
+### 5) TDD
+
+File: `.ai/commands/tdd.md`
+
+Toggles test-first workflow mode.
+
+- Accepts exactly one argument: `on` or `off`
+- Writes `TDD_MODE: on|off` to `.ai/config/workflow-mode.md`
+- Invalid input must not change the config file
+
+### 6) Implement
 
 File: `.ai/commands/implement.md`
 
@@ -111,7 +135,7 @@ Executes a single todo file end-to-end.
 - Runs available checks (`lint`, `build`, tests when required)
 - Moves file to `docs/tasks/done/` after completion
 
-### 5) Test
+### 7) Test
 
 File: `.ai/commands/test.md`
 
@@ -123,7 +147,7 @@ Generates and runs tests from a task file.
 - Moves selected task through `todo -> in-progress -> done` when successful
 - Returns pass/fail report and skipped checks
 
-### 6) Commit
+### 8) Commit
 
 File: `.ai/commands/commit.md`
 
@@ -136,11 +160,13 @@ Creates atomic Conventional Commits from active changes.
 ## Recommended End-To-End Run
 
 1. Start with `ask` only if request is ambiguous.
-2. Create plan with `plan`.
-3. Create execution checklist with `todo`.
-4. Execute with `implement`.
-5. Validate with `test` (scope `unit`, `e2e`, or `all`).
-6. Finalize with `commit`.
+2. Use `bug` first when documenting a known or suspected issue.
+3. Create plan with `plan`.
+4. Create execution checklist with `todo`.
+5. Use `tdd on` when the work should be test-first, or `tdd off` to return to implementation-first mode.
+6. Execute with `implement`.
+7. Validate with `test` (scope `unit`, `e2e`, or `all`).
+8. Finalize with `commit`.
 
 ## Quality Gates
 
