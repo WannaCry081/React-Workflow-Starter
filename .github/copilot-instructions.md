@@ -7,10 +7,8 @@ Use `AGENTS.md` as the primary shared instruction source for this repository.
 GitHub Copilot can use agent skills from:
 
 - `.agents/skills`
-- `.claude/skills`
-- `.github/skills`
 
-Prefer `.agents/skills` as the single source of truth in this repository.
+This repository uses `.agents/skills` as the only repo-local skill source of truth to avoid duplicate command discovery.
 
 ## Shared Workflow Map
 
