@@ -18,7 +18,7 @@ The custom Claude-installed skills already exist as shared user-level skills:
 
 On this machine, `~/.claude/skills` is symlinked to `~/.agents/skills`, so the same custom skill content is already available to Claude, Codex, and OpenCode without copying files between tool folders.
 
-For Copilot, the repo-level `.agents/skills` and `.claude/skills` directories are the compatibility path for this project. If you want the same skills to be available to Copilot globally across all repositories, install or symlink them into `~/.copilot/skills`.
+For Copilot in this repository, `.agents/skills` is the only repo-local skill path used to avoid duplicate command entries. If you want the same skills available globally across repositories, install or symlink them into `~/.copilot/skills`.
 
 ## Use These Skills When Relevant
 
@@ -63,12 +63,12 @@ Each skill delegates to the canonical definition in `.ai/commands/<name>.md`.
 
 ### Cross-Tool Command Wrappers
 
-Commands that need direct slash/prompt support are exposed as thin wrappers for Claude, Codex, OpenCode, and Copilot where that tool supports custom command files. Codex should treat the `.agents/skills/<name>/SKILL.md` files as the reliable workflow invocation source.
+Command wrappers in `.github/prompts/` are intentionally not used in this repository to avoid duplicate slash-command entries in Copilot. Use skill commands from `.agents/skills/<name>/SKILL.md` as the single invocation source.
 
 ## Repo Convention
 
 - Keep shared project skills in `.agents/skills`.
-- Keep `.claude/skills` as a mirror of `.agents/skills` for Claude compatibility.
+- Keep `.agents/skills` as the single repo-local skill source.
 - Use `AGENTS.md` for shared always-on instructions.
 - Use `.github/copilot-instructions.md` only for Copilot-specific guidance that should not live in `AGENTS.md`.
 
@@ -287,6 +287,7 @@ my-app/
 - No additional lazy-loading conventions beyond what App Router provides by default.
 
 <!-- code-review-graph MCP tools -->
+
 ## MCP Tools: code-review-graph
 
 **IMPORTANT: This project has a knowledge graph. ALWAYS use the
@@ -307,16 +308,16 @@ Fall back to Grep/Glob/Read **only** when the graph doesn't cover what you need.
 
 ### Key Tools
 
-| Tool | Use when |
-|------|----------|
-| `detect_changes` | Reviewing code changes — gives risk-scored analysis |
-| `get_review_context` | Need source snippets for review — token-efficient |
-| `get_impact_radius` | Understanding blast radius of a change |
-| `get_affected_flows` | Finding which execution paths are impacted |
-| `query_graph` | Tracing callers, callees, imports, tests, dependencies |
-| `semantic_search_nodes` | Finding functions/classes by name or keyword |
-| `get_architecture_overview` | Understanding high-level codebase structure |
-| `refactor_tool` | Planning renames, finding dead code |
+| Tool                        | Use when                                               |
+| --------------------------- | ------------------------------------------------------ |
+| `detect_changes`            | Reviewing code changes — gives risk-scored analysis    |
+| `get_review_context`        | Need source snippets for review — token-efficient      |
+| `get_impact_radius`         | Understanding blast radius of a change                 |
+| `get_affected_flows`        | Finding which execution paths are impacted             |
+| `query_graph`               | Tracing callers, callees, imports, tests, dependencies |
+| `semantic_search_nodes`     | Finding functions/classes by name or keyword           |
+| `get_architecture_overview` | Understanding high-level codebase structure            |
+| `refactor_tool`             | Planning renames, finding dead code                    |
 
 ### Workflow
 
