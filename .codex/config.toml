@@ -1,0 +1,4 @@
+# Project-level Codex config is intentionally minimal.
+# Codex reads `AGENTS.md` for shared instructions and discovers skills from:
+# - `.agents/skills` in this repository
+# - `$HOME/.agents/skills` on this machine

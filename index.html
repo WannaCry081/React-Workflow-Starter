@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="React Workflow Starter - Build your own AI workflow with a built-in code-review-graph knowledge graph, plus install skills directly from the terminal with Context7 and skill.sh. Plan, implement, test, review, and ship with a repeatable flow."
+    />
+
+    <title>React Workflow Starter</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23171717'/%3E%3Ctext x='50%25' y='54%25' text-anchor='middle' dominant-baseline='middle' font-family='Inter,Arial,sans-serif' font-size='28' font-weight='700' fill='%23f5f5f5'%3EFW%3C/text%3E%3C/svg%3E"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    />
+    <style>
+      /* Fade-in animation */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .fade-in-section {
+        animation: fadeInUp 0.6s ease-out forwards;
+        opacity: 0;
+      }
+
+      .fade-in-section:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+
+      .fade-in-section:nth-child(2) {
+        animation-delay: 0.25s;
+      }
+
+      .fade-in-section:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+    </style>
+  </head>
+  <body class="bg-neutral-900 text-neutral-200 font-['Inter']">
+    <!-- Hero Section -->
+    <section
+      class="fade-in-section py-6 px-4 flex flex-col items-center justify-center"
+    >
+      <div class="w-full max-w-xl mx-auto text-left mt-4 md:mt-10">
+        <h1
+          class="text-2xl md:text-3xl font-bold mb-4 text-balance leading-tight"
+        >
+          Build Your Own AI Workflow, Fast
+        </h1>
+        <p class="text-sm text-neutral-300 mb-8 leading-relaxed">
+          Inspired by everything-claude-code, this starter helps you run a
+          token-efficient, ship-focused workflow where skills are installed
+          directly from terminal using Context7 and skill.sh, and
+          code-review-graph gives your agents a faster structural view of the
+          codebase before they fall back to file scanning.
+        </p>
+
+        <!-- Code Block -->
+        <div
+          class="mb-4 text-left w-full overflow-x-auto rounded-lg border border-neutral-800 bg-neutral-900 px-6 py-5 text-[13px] leading-7 text-neutral-200 font-mono"
+        >
+          <code><span class="text-green-600"># Clone the repository</span></code
+          ><br />
+
+          <code
+            ><span class="text-neutral-500">$</span> git clone
+            <span class="text-amber-600"
+              >https://github.com/wannacry081/react-workflow-starter.git</span
+            ></code
+          ><br />
+          <br />
+
+          <code
+            ><span class="text-green-600"
+              ># Enter the project folder</span
+            ></code
+          ><br />
+          <code
+            ><span class="text-neutral-500">$</span> cd
+            <span class="text-amber-600">react-workflow-starter</span></code
+          ><br />
+          <br />
+
+          <code
+            ><span class="text-green-600"># Start using my workflow</span></code
+          ><br />
+          <code
+            ><span class="text-neutral-500">$</span>
+            <span class="text-amber-600">./install.sh</span></code
+          ><br />
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 mt-6">
+          <a
+            href="https://github.com/WannaCry081?tab=repositories"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center px-5 py-2.5 rounded-md text-sm font-semibold bg-neutral-200 text-neutral-900 border-2 border-neutral-200 transition hover:bg-neutral-300 hover:border-neutral-300"
+            >View GitHub Repository</a
+          >
+          <a
+            href="#other-workflows"
+            class="inline-flex items-center justify-center px-5 py-2.5 rounded-md text-sm font-semibold border border-neutral-700 text-neutral-200 transition hover:border-neutral-600 hover:text-neutral-300 hover:bg-neutral-800/20"
+            >See Workflow Variants</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="fade-in-section pt-6 px-4">
+      <div class="w-full max-w-xl mx-auto mb-8">
+        <h2 class="text-xl font-bold text-balance mb-4">About</h2>
+
+        <div class="space-y-6">
+          <p class="text-sm text-neutral-300 leading-loose">
+            This project is inspired by
+            <span class="text-neutral-100 font-semibold"
+              >everything-claude-code</span
+            >
+            and reworked into a frontend-first system you can actually run from
+            your terminal. Instead of hard-coding behavior into one giant
+            prompt, you compose your workflow by installing focused skills via
+            Context7 and skill.sh.
+          </p>
+
+          <p class="text-sm text-neutral-300 leading-relaxed">
+            The flow stays disciplined: Ask -> Plan -> Todo -> Implement -> Test
+            -> Commit. Each phase produces a concrete artifact in the repo, so
+            handoffs are clear, review is faster, and context does not get lost.
+            You get practical structure without slowing down delivery.
+          </p>
+
+          <p class="text-sm text-neutral-300 leading-relaxed">
+            The repository also ships with
+            <span class="text-neutral-100 font-semibold"
+              >code-review-graph</span
+            >
+            as part of the default setup. Agents are expected to use the graph
+            first for exploration, impact analysis, and review context because
+            it is faster, cheaper on tokens, and more precise than broad grep
+            passes.
+          </p>
+
+          <div
+            class="rounded-lg border border-neutral-800 bg-neutral-900/70 px-5 py-4 text-[13px] leading-7 text-neutral-200"
+          >
+            <p class="mb-2 text-sm text-neutral-300">
+              Learn more at
+              <a
+                href="https://code-review-graph.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-neutral-100 underline decoration-neutral-600 underline-offset-4 hover:decoration-neutral-300"
+                >code-review-graph.com</a
+              >.
+            </p>
+            <code class="block font-mono text-neutral-200"
+              >code-review-graph build</code
+            >
+            <code class="block font-mono text-neutral-200"
+              >code-review-graph update</code
+            >
+          </div>
+
+          <p class="text-sm text-neutral-300 leading-relaxed">
+            If you want your own version of AI-assisted development, this is a
+            clean baseline: install the skills you need, swap in your stack
+            standards, and ship with a repeatable loop built for real projects.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Other Workflows Section -->
+    <section id="other-workflows" class="fade-in-section py-6 px-4">
+      <div class="w-full max-w-xl mx-auto mb-8">
+        <h2 class="text-xl font-bold text-balance mb-4">Other Workflows</h2>
+        <p class="text-sm text-neutral-300 leading-relaxed mb-6">
+          Pick a starter based on your product surface. Each workflow follows
+          the same skill-driven, plan-first, ship-fast discipline.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <a
+            href="https://github.com/wannacry081/backend-workflow-starter"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="block rounded-lg border border-neutral-800 bg-neutral-900/70 p-5 hover:border-neutral-600 hover:bg-neutral-900 transition"
+          >
+            <p
+              class="text-xs uppercase tracking-[0.12em] text-neutral-500 mb-2"
+            >
+              Backend
+            </p>
+            <h3 class="text-base font-semibold text-neutral-100 mb-2">
+              Backend Workflow Starter
+            </h3>
+            <p class="text-sm text-neutral-400 leading-relaxed">
+              API-first workflow with clear contracts, validation, and review
+              gates.
+            </p>
+          </a>
+
+          <a
+            href="https://github.com/wannacry081/mobile-workflow-starter"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="block rounded-lg border border-neutral-800 bg-neutral-900/70 p-5 hover:border-neutral-600 hover:bg-neutral-900 transition"
+          >
+            <p
+              class="text-xs uppercase tracking-[0.12em] text-neutral-500 mb-2"
+            >
+              Mobile
+            </p>
+            <h3 class="text-base font-semibold text-neutral-100 mb-2">
+              Mobile Workflow Starter
+            </h3>
+            <p class="text-sm text-neutral-400 leading-relaxed">
+              Structured setup for React Native and mobile-first product teams.
+            </p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="w-full py-6 border-t border-neutral-800 px-4">
+      <div
+        class="w-full max-w-xl mx-auto flex flex-col md:flex-row justify-between items-start gap-4 text-sm text-neutral-400"
+      >
+        <p>© 2026 WannaCry081. All rights reserved.</p>
+        <div class="flex gap-8">
+          <a
+            target="_blank"
+            href="https://github.com/wannacry081"
+            class="hover:text-neutral-100 transition"
+            >GitHub</a
+          >
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
