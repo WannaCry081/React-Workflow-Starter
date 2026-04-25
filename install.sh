@@ -8,7 +8,7 @@ parent_dir="$(dirname "$current_dir")"
 cd "$current_dir"
 
 rm -f README.md index.html install.sh
-rm -rf .git
+rm -rf .git assets
 
 for doc in AGENTS.md CLAUDE.md; do
 	if [[ ! -e "$parent_dir/$doc" ]]; then

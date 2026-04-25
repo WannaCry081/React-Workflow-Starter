@@ -1,170 +1,169 @@
 # React Workflow Starter
 
-A lightweight, cross-tool workflow starter for shipping React work with consistent agent behavior and a built-in `code-review-graph` knowledge graph.
+![React Workflow Starter site preview](assets/react-workflow-site.png)
 
-This repository is designed to work across Claude, Codex, OpenCode, and Copilot with a shared command lifecycle:
+A practical starter for building a disciplined AI-assisted frontend workflow across Claude, Codex, OpenCode, and GitHub Copilot. It gives every agent the same operating model, command lifecycle, project standards, and review-first context through `code-review-graph`.
 
-1. Ask
-2. Plan
-3. Todo
-4. Implement
-5. Test
-6. Commit
+Instead of relying on one long prompt that drifts over time, this repository organizes the workflow into reusable instructions, command definitions, skills, task folders, and compatibility wrappers that can travel with your project.
 
-## What This Repo Provides
+## Why This Exists
 
-- Shared instruction baseline in `AGENTS.md`
-- Canonical command definitions in `.ai/commands`
-- Task and planning templates in `.ai/references`
-- Task lifecycle folders in `docs/tasks/*`
-- Compatibility wrappers for multiple coding agents
-- `code-review-graph` for graph-first code exploration, impact analysis, and review context
+Modern AI development works best when the agent has clear constraints, repeatable workflows, and fast access to structural code context. React Workflow Starter provides that baseline so planning, implementation, testing, review, and commits happen in a consistent way no matter which coding assistant is driving the work.
+
+Use it when you want:
+
+- Shared agent behavior across Claude, Codex, OpenCode, and Copilot
+- A repeatable `Ask -> Plan -> Todo -> Implement -> Test -> Commit` lifecycle
+- Repo-local skills for React, Next.js, Supabase, Convex, Tailwind, Zustand, and shadcn/ui
+- `code-review-graph` guidance for faster impact analysis and review context
+- Task artifacts that stay visible in `docs/tasks`
+- A portable workflow foundation you can adapt to real frontend projects
+
+## Quick Start
+
+```bash
+git clone https://github.com/wannacry081/react-workflow-starter.git
+cd react-workflow-starter
+./install.sh
+```
+
+The installer is designed to move the workflow files into the parent project folder and remove the starter wrapper files. Review `install.sh` first if you want to customize how the files are copied into an existing repository.
+
+## What You Get
+
+| Area                    | Included                                                           |
+| ----------------------- | ------------------------------------------------------------------ |
+| Shared instructions     | `AGENTS.md`, `CLAUDE.md`, `INSTRUCTIONS.md`, Copilot guidance      |
+| Workflow commands       | `ask`, `plan`, `todo`, `implement`, `test`, `commit`, `bug`, `tdd` |
+| Canonical command logic | `.ai/commands/*.md`                                                |
+| Agent skills            | `.agents/skills/*` with stack-specific workflows                   |
+| Compatibility wrappers  | Claude commands, OpenCode commands, Copilot prompts                |
+| Task lifecycle          | `docs/tasks/todo`, `in-progress`, `done`, and `plan`               |
+| Review context          | `code-review-graph` instructions and configuration                 |
+
+## Workflow
+
+The starter is built around a simple delivery loop:
+
+1. **Ask** - refine unclear requests into a tighter prompt.
+2. **Plan** - create an implementation-ready plan with acceptance criteria.
+3. **Todo** - turn the plan into an executable checklist.
+4. **Implement** - complete one todo file end to end.
+5. **Test** - generate or run validation based on the task.
+6. **Commit** - create atomic Conventional Commits from active changes.
+
+This keeps work visible and reviewable. Plans live in `docs/tasks/plan`, active tasks start in `docs/tasks/todo`, and completed task records move to `docs/tasks/done`.
 
 ## Code Review Graph
 
-This repository is configured to use `code-review-graph` as the default structural exploration layer.
+This repository is configured for graph-first exploration with `code-review-graph`.
 
-Official site: https://code-review-graph.com/
+Official site: <https://code-review-graph.com/>
 
-- Agents should use the graph before broad Grep/Glob/Read passes when exploring the codebase.
-- The graph is preferred for callers, dependents, test coverage, affected flows, and review context.
-- Broad file scanning is the fallback path when graph data is insufficient.
-
-Basic CLI usage:
+Recommended usage:
 
 ```bash
 code-review-graph build
 code-review-graph update
 ```
 
-- Use `code-review-graph build` for the initial graph build or a full rebuild.
-- Use `code-review-graph update` to refresh graph data after code changes.
+Agents should use the graph before broad file scans when they need to:
 
-Typical graph-first workflow:
+- Find relevant functions, classes, and modules
+- Understand callers, callees, imports, and dependents
+- Check impact radius before editing
+- Review changed files with targeted context
+- Locate nearby tests and affected execution paths
 
-1. Use `semantic_search_nodes` or `query_graph` to find the relevant code.
-2. Use `get_impact_radius` or `get_affected_flows` to understand blast radius.
-3. Use `detect_changes` and `get_review_context` during review.
-4. Use `query_graph` with `tests_for` to inspect nearby coverage.
+File scanning is still useful, but it should be the fallback when graph data is incomplete or unavailable.
 
-## Repository Layout
+## Project Structure
 
 ```text
 .
 ├─ AGENTS.md
 ├─ CLAUDE.md
 ├─ INSTRUCTIONS.md
+├─ install.sh
+├─ index.html
+├─ assets/
+│  └─ react-workflow-site.png
 ├─ .ai/
 │  ├─ commands/
-│  │  ├─ ask.md
-│  │  ├─ plan.md
-│  │  ├─ todo.md
-│  │  ├─ implement.md
-│  │  ├─ test.md
-│  │  └─ commit.md
+│  ├─ config/
 │  └─ references/
-│     ├─ plan-template.md
-│     └─ todo-template.md
+├─ .agents/
+│  └─ skills/
+├─ .claude/
+│  ├─ commands/
+│  └─ skills/
+├─ .github/
+│  ├─ copilot-instructions.md
+│  └─ prompts/
+├─ .opencode/
+│  └─ commands/
 └─ docs/
-	└─ tasks/
-		├─ todo/
-		├─ in-progress/
-		├─ done/
-		└─ plan/
+   └─ tasks/
+      ├─ plan/
+      ├─ todo/
+      ├─ in-progress/
+      └─ done/
 ```
 
-## Workflow At A Glance
+## Stack Standards
 
-### 1) Ask
+The shared instructions are tuned for modern frontend work:
 
-Refine ambiguous requests into minimal, clear prompts.
+- **Framework:** Next.js App Router, React, and TypeScript
+- **UI:** shadcn/ui, Tailwind CSS v4, coss, motion-primitives, and framer-motion
+- **State:** Zustand for shared client state, React state for local UI state
+- **Data fetching:** TanStack Query for server state, native `fetch` or API routes for one-off calls
+- **Backend:** Supabase for auth and CRUD-heavy apps, Convex for real-time features
+- **AI:** Vercel AI SDK for streaming and provider-agnostic orchestration
+- **Validation:** Zod at forms, API routes, query params, and tool boundaries
 
-### 2) Plan
-
-Generate one implementation-ready plan file:
-
-- `docs/tasks/plan/<number>-<plan-name>.md`
-
-### 3) Todo
-
-Generate one executable checklist:
-
-- `docs/tasks/todo/<number>-<todo-name>.md`
-
-### 4) Implement
-
-Execute a single todo file end-to-end and move it through lifecycle folders.
-
-### 5) Test
-
-Generate and run tests from task acceptance criteria.
-
-Expected structure:
-
-- `tests/unit` (Vitest)
-- `tests/e2e` (Playwright)
-
-### 6) Commit
-
-Create atomic Conventional Commits from active changes.
-
-## Task Lifecycle
-
-Task files move through these states:
-
-1. `docs/tasks/todo`
-2. `docs/tasks/in-progress`
-3. `docs/tasks/done`
-
-Plans live in:
-
-- `docs/tasks/plan`
+The conventions are documented in `AGENTS.md` so each tool can follow the same project expectations.
 
 ## TDD Mode
 
-Command behavior checks for:
+Workflow behavior can read:
 
-- `.ai/config/workflow-mode.md`
+```text
+.ai/config/workflow-mode.md
+```
 
-Supported toggle:
-
-- `TDD_MODE: on` -> test-first for new behavior
-- `TDD_MODE: off` -> implement-first, tests optional unless requested
-
-If the file is missing, commands default to `TDD_MODE: off`.
-
-You can create this file when needed:
+Supported values:
 
 ```md
+TDD_MODE: on
 TDD_MODE: off
 ```
 
+The default is `off`. Turn it on when you want new behavior to be driven by tests first.
+
 ## Source Of Truth
 
-When behavior appears to conflict, resolve in this order:
+When instructions overlap, resolve behavior in this order:
 
 1. `.ai/commands/*.md`
 2. `AGENTS.md`
-3. `.github/copilot-instructions.md` (Copilot-specific)
-4. `INSTRUCTIONS.md` (repo workflow summary)
+3. `.github/copilot-instructions.md`
+4. `INSTRUCTIONS.md`
 
-## Quality Gates
+This keeps the command workflow canonical while still allowing platform-specific wrappers where needed.
 
-Each workflow phase should produce outputs that are:
+## Related Workflow Starters
 
-- Executable
-- Concise
-- Scope-bounded
-- Validated (what ran, what passed, what was skipped)
+- [NestJS Workflow Starter](https://github.com/wannacry081/nestjs-workflow-starter)
+- [React Native Workflow Starter](https://github.com/wannacry081/react-native-workflow-starter)
+- [Flutter Workflow Starter](https://github.com/wannacry081/flutter-workflow-starter)
 
-## Contributing Notes
+## Contributing
 
-- Keep shared workflow rules in `AGENTS.md`.
-- Keep Copilot-only behavior in `.github/copilot-instructions.md`.
-- Keep command-specific logic in `.ai/commands`.
-- Avoid duplicating workflow definitions across tool folders unless required by platform format.
+Keep the workflow centralized and avoid duplicating behavior across tools unless a platform requires its own format.
 
-## Related Docs
-
-- `INSTRUCTIONS.md` for operational workflow details in this starter
-- `AGENTS.md` for cross-tool standards and stack conventions
+- Put shared project standards in `AGENTS.md`.
+- Keep command behavior in `.ai/commands`.
+- Keep task templates in `.ai/references`.
+- Keep Copilot-only guidance in `.github/copilot-instructions.md`.
+- Keep repo-local skills in `.agents/skills`.
