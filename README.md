@@ -60,6 +60,18 @@ This repository is configured for graph-first exploration with `code-review-grap
 
 Official site: <https://code-review-graph.com/>
 
+Install requirements:
+
+- Python 3.12 or higher is required.
+- Install `code-review-graph` as an isolated CLI with `pipx`.
+
+```bash
+python3.12 --version
+brew install pipx
+pipx ensurepath
+pipx install code-review-graph
+```
+
 Recommended usage:
 
 ```bash
