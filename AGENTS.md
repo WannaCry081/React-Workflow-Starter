@@ -7,7 +7,7 @@ This repository is set up to share one instruction source across Claude, Codex, 
 - Claude Code: reads `CLAUDE.md` and can use skills from `.claude/skills` and `~/.claude/skills`.
 - Codex: reads `AGENTS.md` and can use skills from `.agents/skills` and `$HOME/.agents/skills`.
 - OpenCode: reads `AGENTS.md` and can use skills from `.opencode/skills`, `.claude/skills`, `.agents/skills`, and matching home-level locations.
-- GitHub Copilot: uses `AGENTS.md`, `.github/copilot-instructions.md`, and supports project agent skills from `.github/skills`, `.claude/skills`, and `.agents/skills`. Its personal skill location is `~/.copilot/skills`.
+- GitHub Copilot: uses `AGENTS.md`, `.github/copilot-instructions.md`, and references project agent skills from `.agents/skills`. Its personal skill location is `~/.copilot/skills`.
 
 ## Shared Skill Sources On This Machine
 
@@ -18,7 +18,13 @@ The custom Claude-installed skills already exist as shared user-level skills:
 
 On this machine, `~/.claude/skills` is symlinked to `~/.agents/skills`, so the same custom skill content is already available to Claude, Codex, and OpenCode without copying files between tool folders.
 
-For Copilot in this repository, `.agents/skills` is the only repo-local skill path used to avoid duplicate command entries. If you want the same skills available globally across repositories, install or symlink them into `~/.copilot/skills`.
+In this repository, `.agents/skills` is the only content-bearing repo-local skill tree. Platform-specific skill paths for tools that need them are aliases to that directory, not separate copies:
+
+- `.claude/skills` -> `../.agents/skills`
+- `.codex/skills` -> `../.agents/skills`
+- `.opencode/skills` -> `../.agents/skills`
+
+Do not copy skill folders into those platform directories. Keeping the tool-specific aliases minimal prevents drift between platforms and avoids duplicate command definitions from separately maintained skill trees. Copilot uses `.agents/skills` directly; do not recreate a GitHub-specific skill alias.
 
 ## Use These Skills When Relevant
 
@@ -38,6 +44,8 @@ This repository also contains repo-local skills under `.agents/skills`. Prefer t
 
 - Next.js
 - React
+- Vite React
+- TanStack Start
 - Supabase
 - Convex
 - Tailwind
@@ -69,6 +77,8 @@ Command wrappers in `.github/prompts/` are intentionally not used in this reposi
 
 - Keep shared project skills in `.agents/skills`.
 - Keep `.agents/skills` as the single repo-local skill source.
+- Keep `.claude/skills`, `.codex/skills`, and `.opencode/skills` as symlink aliases to `.agents/skills`.
+- Do not recreate a GitHub-specific skill alias; Copilot should reference `.agents/skills` directly.
 - Use `AGENTS.md` for shared always-on instructions.
 - Use `.github/copilot-instructions.md` only for Copilot-specific guidance that should not live in `AGENTS.md`.
 
@@ -85,13 +95,14 @@ Command wrappers in `.github/prompts/` are intentionally not used in this reposi
 
 ### Stack & Core Packages
 
+- **Supported app stacks:** Next.js App Router, Vite React, and Vite React with TanStack Start. Pick the stack that matches the existing project; do not migrate frameworks unless explicitly asked.
 - **UI library:** `shadcn/ui` is the primary component foundation. `coss`, `motion-primitives`, and `framer-motion` handle motion and transitions.
 - **Styling:** Tailwind CSS v4. Use `TweakCN` for theme token updates and `globals.css` changes.
 - **State management:** `Zustand` for shared client state. Built-in React state for local UI state.
 - **Data fetching:** `TanStack Query` for server-state, native `fetch` or API routes for one-off calls. Choose based on use case.
 - **Backend/database:** `Supabase` for auth and CRUD-heavy apps; `Convex` for real-time features. Either or both may be present in a project.
 - **Authentication:** `Supabase Auth` when using Supabase; `Clerk` when using Convex.
-- **AI SDK:** `Vercel AI SDK` by default — fits App Router, supports streaming, works with API routes, stays provider-agnostic.
+- **AI SDK:** `Vercel AI SDK` by default. In Next.js, use App Router API routes. In Vite React, use a separate API route/server endpoint. In TanStack Start, use server functions or API routes based on whether the endpoint is internal or externally consumed.
 
 ### Next.js Conventions
 
@@ -190,11 +201,29 @@ my-app/
 └─ tsconfig.json
 ```
 
+### Vite React Conventions
+
+- **Build tool:** Use Vite with React and TypeScript. Prefer `vite.config.ts`, ESM config, and `@vitejs/plugin-react`.
+- **App shape:** Put application source under `src/`. Use `src/main.tsx` for the browser entry, `src/App.tsx` for the root app shell, and `src/routes/` only when a router is installed.
+- **Routing:** Use TanStack Router for non-Next React routing when route-level data loading or nested layouts are needed. Keep simple apps on component-level state and composition.
+- **Environment variables:** Use `VITE_` for browser-exposed variables. Keep secrets out of Vite client env and route secret-backed work through server endpoints.
+- **Static assets:** Use `public/` for unchanged static files and imported assets under `src/assets/` when Vite should fingerprint them.
+- **Path aliases:** Configure `@/*` to `./src/*` in both `vite.config.ts` and `tsconfig.json`.
+
+### TanStack Start Conventions
+
+- **Framework:** Use TanStack Start when the project needs full-stack Vite React with SSR, file-based routing, server functions, and deployable server/runtime integration.
+- **Routing:** Use `src/routes/` with TanStack Router conventions. Keep `src/routeTree.gen.ts` generated and do not edit it manually.
+- **Server functions:** Use `createServerFn` for internal server-side reads and mutations. Validate inputs with Zod and keep secrets server-side.
+- **API routes:** Use route files for webhooks, third-party callbacks, and externally consumed HTTP endpoints. Keep server functions for app-internal workflows.
+- **Entries and config:** Keep `src/client.tsx`, `src/ssr.tsx`, `src/router.tsx`, and `vite.config.ts` aligned with the TanStack Start plugin setup.
+- **Deployment:** Follow the active adapter/runtime in the project. For Cloudflare Workers, keep runtime config in `wrangler.jsonc`, use `.dev.vars` for local secrets, and avoid committing generated or local runtime output.
+
 ### TypeScript & Code Style
 
 - **Strict mode:** `strict: true` in tsconfig.
 - **`interface` vs `type`:** Use `interface` for component props and extendable contracts. Use `type` for unions, aliases, database shapes, and domain/service objects.
-- **Validation:** Use `Zod` at all data boundaries — forms, API routes, query params, tool inputs.
+- **Validation:** Use `Zod` at all data boundaries — forms, API routes, server functions, query params, tool inputs.
 - **Linting/formatting:** ESLint + Prettier.
 - **Path aliases:** Always use `@/` aliases (`@/components`, `@/lib`, etc.). No relative imports across feature boundaries.
 
@@ -208,9 +237,9 @@ my-app/
 ### AI Workflow
 
 - **Model strategy:** Model-agnostic setup. Optimize for Claude- and GPT-class models first, with room to swap providers later.
-- **Streaming:** Stream by default. Pattern: `streamText` in a `route.ts` API endpoint on the server, `useChat` or a custom transport on the client, both via Vercel AI SDK.
+- **Streaming:** Stream by default. Pattern: `streamText` in a server endpoint or server function, `useChat` or a custom transport on the client, both via Vercel AI SDK.
 - **API keys:** `.env.local` for all secrets in local development. Use `.env` only for non-secret shared defaults. Real secrets go in `.env.local` or deployment platform env settings.
-- **Tool use / function calling:** Server-controlled execution through API routes. Zod schemas for all tool inputs. Typed responses. Clear separation between orchestration, tool handlers, and UI rendering.
+- **Tool use / function calling:** Server-controlled execution through API routes, server endpoints, or server functions. Zod schemas for all tool inputs. Typed responses. Clear separation between orchestration, tool handlers, and UI rendering.
 
 ### Testing & Quality
 
@@ -227,8 +256,10 @@ my-app/
 
 ### Notes
 
-- Supabase env vars: use `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, and `DATABASE_URL` only.
+- Supabase env vars: use `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in Next.js; use `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in Vite React or TanStack Start client code. Keep `DATABASE_URL` server-only.
 - Next.js 16: use `proxy.ts`, not `middleware.ts`.
+- Vite client env vars must use the `VITE_` prefix and must not contain secrets.
+- TanStack Start projects should use server functions for app-internal server work and API routes for external HTTP integrations.
 
 ### References
 
@@ -238,6 +269,8 @@ my-app/
 - [AI SDK `useChat`](https://ai-sdk.dev/docs/reference/ai-sdk-ui/use-chat)
 - [AI SDK tool usage](https://ai-sdk.dev/docs/ai-sdk-ui/chatbot-tool-usage)
 - [Supabase Next.js quickstart](https://supabase.com/docs/guides/getting-started/quickstarts/nextjs)
+- [Vite React](https://vite.dev/guide/)
+- [TanStack Start](https://tanstack.com/start/latest)
 
 ---
 
@@ -246,8 +279,8 @@ my-app/
 ### Component Structure (Pragmatic, Not Doctrinaire)
 
 - Not a strict 5-level atomic design hierarchy. The structure is responsibility-based, not atomic-purity-based.
-- Routing and layout live under `app/`. Reusable UI lives under `components/{ui,shared,forms,data-display,providers}`.
-- `layout.tsx` files serve as the "template" tier — no separate design-system template layer needed.
+- Routing and layout live under the framework router: `app/` for Next.js, `src/routes/` for TanStack Start, and the configured router location for Vite React. Reusable UI lives under `components/{ui,shared,forms,data-display,providers}` or `src/components/{ui,shared,forms,data-display,providers}` depending on the project root.
+- Framework layout files serve as the "template" tier — no separate design-system template layer needed.
 - Atoms may depend on other atoms when it makes sense. The boundary is responsibility, not atomic level.
 - No mandated compound component pattern. Named exports are the default. Dot-notation APIs (`Card.Header`) are opt-in only when the component family justifies it.
 - Variant handling: `shadcn/ui` primitives + Tailwind + `cn()`. Use structured variants (e.g., CVA) for reusable primitives with multiple states; inline Tailwind conditionals for one-off cases.
@@ -256,22 +289,22 @@ my-app/
 ### Data & State Layer
 
 - Strict separation: TanStack Query (server/remote state) → Zustand (shared client state) → React `useState` (local UI state) → `fetch` + API routes (one-off calls).
-- A light data-access layer is implied by folder structure: `lib/react-query/`, `lib/supabase/`, `lib/convex/`, and `app/api/`. Network and database calls belong in these layers, not in presentational components.
+- A light data-access layer is implied by folder structure: `lib/react-query/`, `lib/supabase/`, `lib/convex/`, `app/api/`, `src/lib/`, `src/server/`, and `src/routes/api/` as applicable. Network and database calls belong in these layers, not in presentational components.
 - No formal repository pattern required.
 - No mandated API response envelope. The real requirements are: Zod validation at boundaries + fully typed responses.
 
 ### Error & Loading Architecture
 
-- Route-level baseline: `app/loading.tsx` and `app/not-found.tsx` per the standard folder structure.
+- Route-level baseline: use framework-native loading and not-found patterns, such as `app/loading.tsx` and `app/not-found.tsx` in Next.js or route-level pending/error/not-found handling in TanStack Router and TanStack Start.
 - Shared error utilities centralized in `lib/errors.ts`.
 - `try/catch` only where recovery actually matters — API routes and external integrations. Do not wrap internal logic or framework calls.
 - No repo-wide Suspense mandate. Rely on framework-native route loading; add component-level Suspense/error boundaries only where targeted.
 
 ### Routing & Layout
 
-- Route groups define the structural access boundary: `(public)`, `(auth)`, `(protected)`, `(admin)`.
-- Per-boundary nested layouts expected: `(protected)/layout.tsx` and `(admin)/layout.tsx` at minimum.
-- Parallel routes and intercepting routes are **opt-in only** for modal/overlay UX patterns — not part of baseline routing architecture.
+- Route groups or route layout files define structural access boundaries: `(public)`, `(auth)`, `(protected)`, and `(admin)` in Next.js; pathless layout routes such as `_auth` or `_protected` in TanStack Router/Start.
+- Per-boundary nested layouts are expected for protected and admin areas.
+- Parallel routes, intercepting routes, and overlay route patterns are **opt-in only** for modal/overlay UX patterns — not part of baseline routing architecture.
 
 ### Module Boundaries
 
@@ -281,10 +314,10 @@ my-app/
 
 ### Performance
 
-- Server Components are the default and the primary performance lever. Add `"use client"` only when required (state, effects, browser APIs, client-only libraries).
-- Route-level code splitting is automatic via App Router — no extra configuration needed.
-- Images: use `next/image` always. Provide real dimensions or `fill`. Set `sizes` and `priority` appropriately.
-- No additional lazy-loading conventions beyond what App Router provides by default.
+- In Next.js, Server Components are the default and the primary performance lever. Add `"use client"` only when required.
+- In Vite React and TanStack Start, keep client bundles small with route-level splitting, framework-native lazy loading, and server-side work where the framework supports it.
+- Images: use `next/image` in Next.js. In Vite React and TanStack Start, use optimized static assets or an image pipeline appropriate to the host. Always provide dimensions or stable aspect ratios and avoid layout shift.
+- No additional lazy-loading conventions beyond what the active framework provides by default.
 
 <!-- code-review-graph MCP tools -->
 

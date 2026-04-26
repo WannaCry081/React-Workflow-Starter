@@ -8,7 +8,7 @@ GitHub Copilot can use agent skills from:
 
 - `.agents/skills`
 
-This repository uses `.agents/skills` as the only repo-local skill source of truth to avoid duplicate command discovery.
+This repository uses `.agents/skills` as the only repo-local skill source of truth. Do not recreate a GitHub-specific skill alias or copy skills into `.github`.
 
 ## Shared Workflow Map
 
